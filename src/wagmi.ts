@@ -5,6 +5,7 @@ const config = getDefaultConfig({
   appName: "Rounds Checker",
   projectId: "c4f79cc821944d9680842e34466bfb",
   chains: [mainnet, base],
+
   ssr: true,
 });
 
