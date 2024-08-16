@@ -1,69 +1,75 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { searchFarcasterUsers } from "@/lib/api";
+import debounce from "lodash/debounce";
+
+interface FarcasterUser {
+  fid: string;
+  username: string;
+}
 
 export function SearchBar() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [suggestions, setSuggestions] = useState<FarcasterUser[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchSuggestions = async () => {
-      if (searchQuery.length > 2) {
-        setIsLoading(true);
-        // Replace this with an actual API call
-        const mockSuggestions = ["user1", "user2", "user3"].filter((user) =>
-          user.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-        setTimeout(() => {
-          setSuggestions(mockSuggestions);
-          setIsLoading(false);
-        }, 500); // Simulating API delay
-      } else {
+  const debouncedSearch = useCallback(
+    debounce(async (query: string) => {
+      if (query.length < 3) {
         setSuggestions([]);
+        return;
+      }
+      setIsLoading(true);
+      try {
+        const users = await searchFarcasterUsers(query);
+        setSuggestions(users);
+      } catch (error) {
+        console.error("Error fetching suggestions:", error);
+        toast.error("Failed to fetch suggestions");
+      } finally {
         setIsLoading(false);
       }
+    }, 300),
+    []
+  );
+
+  useEffect(() => {
+    debouncedSearch(searchQuery);
+    return () => {
+      debouncedSearch.cancel();
     };
+  }, [searchQuery, debouncedSearch]);
 
-    const debounce = setTimeout(() => {
-      fetchSuggestions();
-    }, 300);
-
-    return () => clearTimeout(debounce);
-  }, [searchQuery]);
-
-  const handleSearch = async (e: React.FormEvent) => {
+  const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!searchQuery.trim()) {
-      toast.error("Please enter a Farcaster handle");
-      return;
+    if (suggestions.length > 0) {
+      navigateToUserRounds(suggestions[0].username);
     }
-
-    toast.loading("Searching for " + searchQuery);
-    // Here you would typically make an API call
-    // For now, we'll simulate a search with a timeout
-    setTimeout(() => {
-      toast.success("Search completed for " + searchQuery);
-      // Navigate to results page
-      router.push(`/results?handle=${encodeURIComponent(searchQuery)}`);
-    }, 2000);
   };
 
-  const handleSuggestionClick = (suggestion: string) => {
-    setSearchQuery(suggestion);
-    inputRef.current?.focus();
+  const handleSuggestionClick = (username: string) => {
+    navigateToUserRounds(username);
+  };
+
+  const navigateToUserRounds = (username: string) => {
+    const url = `https://rounds-checker.adaptable.app/api/v1/rounds/user?userId=${encodeURIComponent(
+      username
+    )}`;
+    window.open(url, "_blank");
   };
 
   const handleClearSearch = () => {
     setSearchQuery("");
+    setSuggestions([]);
     inputRef.current?.focus();
   };
 
@@ -93,26 +99,27 @@ export function SearchBar() {
         <Button
           type="submit"
           className="absolute right-2 top-1/2 transform -translate-y-1/2 rounded-full transition-all duration-300"
+          disabled={isLoading}
         >
           <MagnifyingGlassIcon className="h-5 w-5" />
         </Button>
       </form>
-      {isFocused && searchQuery.length > 2 && (
+      {isFocused && (searchQuery.length >= 3 || isLoading) && (
         <div className="absolute mt-2 w-full bg-background rounded-lg shadow-lg border border-border overflow-hidden z-10">
           {isLoading ? (
             <div className="flex items-center justify-center py-4">
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
             </div>
           ) : suggestions.length > 0 ? (
-            suggestions.map((suggestion) => (
+            suggestions.map((user) => (
               <div
-                key={suggestion}
+                key={user.fid}
                 className="px-4 py-3 hover:bg-secondary cursor-pointer transition-colors duration-150"
-                onClick={() => handleSuggestionClick(suggestion)}
+                onClick={() => handleSuggestionClick(user.username)}
               >
                 <div className="flex items-center">
                   <MagnifyingGlassIcon className="h-4 w-4 mr-2 text-muted-foreground" />
-                  <span>{suggestion}</span>
+                  <span>{user.username}</span>
                 </div>
               </div>
             ))
