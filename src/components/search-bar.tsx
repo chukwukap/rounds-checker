@@ -8,10 +8,12 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { searchFarcasterUsers } from "@/lib/api";
 import debounce from "lodash/debounce";
+import Image from "next/image";
 
 interface FarcasterUser {
   fid: string;
   username: string;
+  profileImage: string;
 }
 
 export function SearchBar() {
@@ -118,7 +120,22 @@ export function SearchBar() {
                 onClick={() => handleSuggestionClick(user.username)}
               >
                 <div className="flex items-center">
-                  <MagnifyingGlassIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+                  {user.profileImage ? (
+                    <Image
+                      unoptimized
+                      src={user.profileImage}
+                      alt={`${user.username}'s profile`}
+                      width={32}
+                      height={32}
+                      className="rounded-full mr-3"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 bg-gray-200 rounded-full mr-3 flex items-center justify-center">
+                      <span className="text-gray-500 text-sm">
+                        {user.username.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                  )}
                   <span>{user.username}</span>
                 </div>
               </div>

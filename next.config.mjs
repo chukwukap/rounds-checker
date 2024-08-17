@@ -21,6 +21,11 @@ const nextConfig = {
         hostname: "i.pravatar.cc",
         pathname: "/**",
       },
+      {
+        hostname: "i.imgur.com",
+        pathname: "/**",
+        protocol: "https",
+      },
     ],
   },
 };
