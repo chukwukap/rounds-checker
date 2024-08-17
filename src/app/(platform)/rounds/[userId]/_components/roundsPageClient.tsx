@@ -124,10 +124,7 @@ export default function RoundsPageClient({
       >
         <div className="flex items-center mb-6">
           <Image
-            src={
-              farcasterUser?.profileImage ||
-              `https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_png,w_256/${userId}.png`
-            }
+            src={"https://placehold.co/600x400/png"}
             alt={`${userData.farcasterId || userId}'s avatar`}
             unoptimized={true}
             width={96}
@@ -136,7 +133,7 @@ export default function RoundsPageClient({
           />
           <div>
             <h1 className="text-4xl font-bold text-primary">
-              {farcasterUser?.userName || userId}
+              {userData.farcasterId || userId}
             </h1>
             <p className="text-xl text-secondary">
               Farcaster ID: {userData.farcasterId || "N/A"}
