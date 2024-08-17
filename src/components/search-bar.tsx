@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { searchFarcasterUsers } from "@/lib/api";
+import { searchFarcasterUsers } from "@/actions/api";
 import debounce from "lodash/debounce";
 import Image from "next/image";
 
@@ -54,16 +54,25 @@ export function SearchBar() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigateToUserRounds(searchQuery.trim());
+      const user = suggestions.find(
+        (u) => u.username.toLowerCase() === searchQuery.trim().toLowerCase()
+      );
+      if (user) {
+        navigateToUserRounds(user.fid);
+      } else {
+        toast.error(
+          "User not found. Please select a user from the suggestions."
+        );
+      }
     }
   };
 
-  const handleSuggestionClick = (username: string) => {
-    navigateToUserRounds(username);
+  const handleSuggestionClick = (fid: string) => {
+    navigateToUserRounds(fid);
   };
 
-  const navigateToUserRounds = (username: string) => {
-    router.push(`/rounds/${encodeURIComponent(username)}`);
+  const navigateToUserRounds = (fid: string) => {
+    router.push(`/rounds/${encodeURIComponent(fid)}`);
   };
 
   const handleClearSearch = () => {
@@ -114,7 +123,7 @@ export function SearchBar() {
               <div
                 key={user.fid}
                 className="px-4 py-3 hover:bg-secondary cursor-pointer transition-colors duration-150"
-                onClick={() => handleSuggestionClick(user.username)}
+                onClick={() => handleSuggestionClick(user.fid)}
               >
                 <div className="flex items-center">
                   {user.profileImage ? (

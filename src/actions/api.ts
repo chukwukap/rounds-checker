@@ -2,7 +2,8 @@
 
 import { init, fetchQuery } from "@airstack/node";
 
-// Initialize Airstack with your API key
+import { revalidatePath } from "next/cache";
+
 init(
   process.env.NEXT_PUBLIC_AIRSTACK_API_KEY ||
     "1cdce8f5b28b94245b9e354dfbef9a1f5"
@@ -44,7 +45,7 @@ export async function searchFarcasterUsers(query: string) {
     ) {
       return response.data.Socials.Social.map((social: any) => ({
         fid: social.userId,
-        username: social.profileName,
+        userId: social.profileName,
         profileImage: social.profileImage,
       }));
     } else {
@@ -54,5 +55,26 @@ export async function searchFarcasterUsers(query: string) {
   } catch (error) {
     console.error("Error searching Farcaster users:", error);
     return [];
+  }
+}
+
+export async function fetchUserData(userId: string) {
+  try {
+    const response = await fetch(
+      `https://rounds-checker.adaptable.app/api/v1/rounds/user?userId=${userId}`,
+      { next: { revalidate: 60 } } // Revalidate every 60 seconds
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch user data");
+    }
+
+    const data = await response.json();
+    console.log("data from api:", data);
+    revalidatePath(`/rounds/${userId}`);
+    return data;
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    throw error;
   }
 }
