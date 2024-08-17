@@ -1,14 +1,25 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronUpIcon,
   ChevronDownIcon,
   MagnifyingGlassIcon,
   ArrowPathIcon,
+  TrophyIcon,
 } from "@heroicons/react/24/solid";
 import Image from "next/image";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useTheme } from "next-themes";
 
 interface User {
   rank: number;
@@ -44,66 +55,12 @@ const mockUsers: User[] = [
     participations: 40,
     winRate: 0.7,
   },
-  // ... add more mock users
 ];
-
-const CustomInput = ({
-  value,
-  onChange,
-  placeholder,
-}: {
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  placeholder: string;
-}) => (
-  <div className="relative">
-    <input
-      type="text"
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-      className="w-full py-2 px-4 pr-10 rounded-full bg-background border border-input text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-    />
-    <MagnifyingGlassIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-  </div>
-);
-
-const CustomSelect = ({
-  value,
-  onChange,
-  options,
-}: {
-  value: string;
-  onChange: (value: string) => void;
-  options: string[];
-}) => (
-  <select
-    value={value}
-    onChange={(e) => onChange(e.target.value)}
-    className="py-2 px-4 rounded-full bg-background border border-input text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-  >
-    {options.map((option) => (
-      <option key={option} value={option}>
-        {option}
-      </option>
-    ))}
-  </select>
-);
-
-const CustomButton = ({
-  onClick,
-  children,
-}: {
-  onClick: () => void;
-  children: React.ReactNode;
-}) => (
-  <button
-    onClick={onClick}
-    className="py-2 px-4 rounded-full bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
-  >
-    {children}
-  </button>
-);
+const sortOptions = [
+  { value: "earnings", label: "Earnings" },
+  { value: "participations", label: "Participations" },
+  { value: "winRate", label: "Win Rate" },
+];
 
 export default function LeaderboardPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -113,6 +70,7 @@ export default function LeaderboardPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const usersPerPage = 10;
+  const { theme } = useTheme();
 
   useEffect(() => {
     fetchUsers();
@@ -120,27 +78,32 @@ export default function LeaderboardPage() {
 
   const fetchUsers = async () => {
     setIsLoading(true);
-    // Simulating API call
     setTimeout(() => {
       setUsers(mockUsers);
       setIsLoading(false);
     }, 1000);
   };
 
-  const sortedUsers = users
-    .sort((a, b) => {
-      if (a[sortField] < b[sortField]) return sortDirection === "asc" ? -1 : 1;
-      if (a[sortField] > b[sortField]) return sortDirection === "asc" ? 1 : -1;
-      return 0;
-    })
-    .filter((user) =>
-      user.handle.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+  const sortedUsers = useMemo(() => {
+    return users
+      .sort((a, b) => {
+        if (a[sortField] < b[sortField])
+          return sortDirection === "asc" ? -1 : 1;
+        if (a[sortField] > b[sortField])
+          return sortDirection === "asc" ? 1 : -1;
+        return 0;
+      })
+      .filter((user) =>
+        user.handle.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+  }, [users, sortField, sortDirection, searchTerm]);
 
-  const paginatedUsers = sortedUsers.slice(
-    (currentPage - 1) * usersPerPage,
-    currentPage * usersPerPage
-  );
+  const paginatedUsers = useMemo(() => {
+    return sortedUsers.slice(
+      (currentPage - 1) * usersPerPage,
+      currentPage * usersPerPage
+    );
+  }, [sortedUsers, currentPage]);
 
   const totalPages = Math.ceil(sortedUsers.length / usersPerPage);
 
@@ -156,31 +119,50 @@ export default function LeaderboardPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted to-background py-20">
       <div className="container mx-auto px-4">
-        <motion.h1
-          className=" h-28 text-5xl font-bold mb-12 text-center text-foreground"
+        <motion.div
+          className="mb-12 text-center"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          Rounds Checker Leaderboard
-        </motion.h1>
+          <h1 className="text-5xl font-bold mb-4 text-foreground">
+            Rounds Checker Leaderboard
+          </h1>
+          <p className="text-xl text-muted-foreground">
+            Discover the top performers in the Rounds ecosystem
+          </p>
+        </motion.div>
 
         <div className="mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <CustomInput
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search by handle"
-          />
-          <div className="flex items-center gap-4">
-            <CustomSelect
-              value={sortField}
-              onChange={(value) => setSortField(value as keyof User)}
-              options={["earnings", "participations", "winRate"]}
+          <div className="relative w-full md:w-auto">
+            <Input
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search by handle"
+              className="pl-10 pr-4 py-2 w-full md:w-64"
             />
-            <CustomButton onClick={fetchUsers}>
-              <ArrowPathIcon className="w-5 h-5 mr-2 inline" />
+            <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+          </div>
+          <div className="flex items-center gap-4">
+            <Select
+              value={sortField}
+              onValueChange={(value) => setSortField(value as keyof User)}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                {sortOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button onClick={fetchUsers} variant="outline">
+              <ArrowPathIcon className="w-5 h-5 mr-2" />
               Refresh
-            </CustomButton>
+            </Button>
           </div>
         </div>
 
@@ -207,12 +189,18 @@ export default function LeaderboardPage() {
                     >
                       <div className="flex items-center gap-1">
                         {header}
-                        {sortField === header.toLowerCase().replace(" ", "") &&
-                          (sortDirection === "asc" ? (
+                        {sortField ===
+                          header.toLowerCase().replace(" ", "") && (
+                          <motion.div
+                            initial={{ rotate: 0 }}
+                            animate={{
+                              rotate: sortDirection === "asc" ? 0 : 180,
+                            }}
+                            transition={{ duration: 0.2 }}
+                          >
                             <ChevronUpIcon className="w-4 h-4" />
-                          ) : (
-                            <ChevronDownIcon className="w-4 h-4" />
-                          ))}
+                          </motion.div>
+                        )}
                       </div>
                     </th>
                   ))}
@@ -240,7 +228,20 @@ export default function LeaderboardPage() {
                         className="hover:bg-muted/50 transition-colors duration-150"
                       >
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
-                          {user.rank}
+                          <div className="flex items-center">
+                            {user.rank <= 3 && (
+                              <TrophyIcon
+                                className={`w-5 h-5 mr-2 ${
+                                  user.rank === 1
+                                    ? "text-yellow-500"
+                                    : user.rank === 2
+                                    ? "text-gray-400"
+                                    : "text-amber-600"
+                                }`}
+                              />
+                            )}
+                            {user.rank}
+                          </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                           <div className="flex items-center">
@@ -261,7 +262,19 @@ export default function LeaderboardPage() {
                           {user.participations}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
-                          {(user.winRate * 100).toFixed(2)}%
+                          <div className="flex items-center">
+                            <div
+                              className="w-16 bg-muted rounded-full h-2 mr-2"
+                              style={{
+                                background: `linear-gradient(to right, ${
+                                  theme === "dark" ? "#22c55e" : "#16a34a"
+                                } ${user.winRate * 100}%, ${
+                                  theme === "dark" ? "#3f3f46" : "#e5e7eb"
+                                } ${user.winRate * 100}%)`,
+                              }}
+                            ></div>
+                            {(user.winRate * 100).toFixed(2)}%
+                          </div>
                         </td>
                       </motion.tr>
                     ))
@@ -273,21 +286,25 @@ export default function LeaderboardPage() {
         </div>
 
         <div className="mt-8 flex justify-center items-center gap-4">
-          <CustomButton
+          <Button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            variant="outline"
           >
             Previous
-          </CustomButton>
+          </Button>
           <span className="text-sm font-medium text-foreground">
             Page {currentPage} of {totalPages}
           </span>
-          <CustomButton
+          <Button
             onClick={() =>
               setCurrentPage((prev) => Math.min(prev + 1, totalPages))
             }
+            disabled={currentPage === totalPages}
+            variant="outline"
           >
             Next
-          </CustomButton>
+          </Button>
         </div>
       </div>
     </div>

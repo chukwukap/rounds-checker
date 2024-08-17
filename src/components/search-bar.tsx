@@ -53,8 +53,8 @@ export function SearchBar() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (suggestions.length > 0) {
-      navigateToUserRounds(suggestions[0].username);
+    if (searchQuery.trim()) {
+      navigateToUserRounds(searchQuery.trim());
     }
   };
 
@@ -63,10 +63,7 @@ export function SearchBar() {
   };
 
   const navigateToUserRounds = (username: string) => {
-    const url = `https://rounds-checker.adaptable.app/api/v1/rounds/user?userId=${encodeURIComponent(
-      username
-    )}`;
-    window.open(url, "_blank");
+    router.push(`/rounds/${encodeURIComponent(username)}`);
   };
 
   const handleClearSearch = () => {
