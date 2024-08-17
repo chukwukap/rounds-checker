@@ -152,6 +152,7 @@ export default function AboutPage() {
       </section>
 
       {/* Mission Section */}
+      {/* 
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between">
@@ -194,6 +195,7 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+       */}
 
       {/* Features Section */}
       <section className="py-20 bg-secondary/20">
