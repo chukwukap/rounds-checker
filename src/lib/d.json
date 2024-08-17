@@ -1,0 +1,125 @@
+{
+    "farcasterId": "656588",
+    "roundsParticipated": [
+        "258",
+        "279",
+        "310",
+        "389",
+        "345",
+        "223"
+    ],
+    "winnings": [
+        {
+            "amount": 0.007905138339920948,
+            "round": {
+                "_id": "66c0271d1bce16a189427211",
+                "roundId": "258",
+                "__v": 0,
+                "areWinnersReported": true,
+                "communityId": "23",
+                "createdAt": "2024-08-17T04:31:03.674Z",
+                "denomination": "ETH",
+                "logo": "https://res.cloudinary.com/dbuaprzc0/image/upload/v1723862788/ndtmestxlglrkgn1lcq8.png",
+                "name": "Base Builds by Rounds.wtf",
+                "startsAt": "2024-07-12T04:00:00.000Z",
+                "status": "complete",
+                "tokenAddress": null
+            }
+        },
+        {
+            "amount": 20.242914979757085,
+            "round": {
+                "_id": "66c027491bce16a189427262",
+                "roundId": "279",
+                "__v": 0,
+                "areWinnersReported": true,
+                "communityId": "43",
+                "createdAt": "2024-08-17T04:31:46.508Z",
+                "denomination": "UNKNOWN",
+                "logo": "https://res.cloudinary.com/dbuaprzc0/image/upload/v1723862788/ndtmestxlglrkgn1lcq8.png",
+                "name": "Mister Miggles on the Superchain",
+                "startsAt": "2024-07-18T16:00:00.000Z",
+                "status": "complete",
+                "tokenAddress": "0x4200000000000000000000000000000000000042"
+            }
+        },
+        {
+            "amount": 0.004385964912280701,
+            "round": {
+                "_id": "66c028001bce16a189427381",
+                "roundId": "310",
+                "__v": 0,
+                "areWinnersReported": true,
+                "communityId": "23",
+                "createdAt": "2024-08-17T04:33:04.796Z",
+                "denomination": "ETH",
+                "logo": "https://res.cloudinary.com/dbuaprzc0/image/upload/v1723862788/ndtmestxlglrkgn1lcq8.png",
+                "name": "Base Builds by Rounds.wtf",
+                "startsAt": "2024-07-26T04:00:00.000Z",
+                "status": "complete",
+                "tokenAddress": null
+            }
+        },
+        {
+            "amount": 0.007450331125827814,
+            "round": {
+                "_id": "66c0285b1bce16a18942741e",
+                "roundId": "389",
+                "__v": 0,
+                "areWinnersReported": true,
+                "communityId": "23",
+                "createdAt": "2024-08-17T04:34:35.727Z",
+                "denomination": "ETH",
+                "logo": "https://res.cloudinary.com/dbuaprzc0/image/upload/v1723862788/ndtmestxlglrkgn1lcq8.png",
+                "name": "Base Builds by Rounds.wtf",
+                "startsAt": "2024-08-09T04:00:00.000Z",
+                "status": "complete",
+                "tokenAddress": null
+            }
+        },
+        {
+            "amount": 0.01427061310782241,
+            "round": {
+                "_id": "66c028661bce16a189427434",
+                "roundId": "345",
+                "__v": 0,
+                "areWinnersReported": true,
+                "communityId": "23",
+                "createdAt": "2024-08-17T04:34:46.584Z",
+                "denomination": "ETH",
+                "logo": "https://res.cloudinary.com/dbuaprzc0/image/upload/v1723862788/ndtmestxlglrkgn1lcq8.png",
+                "name": "Base Builds by Rounds.wtf",
+                "startsAt": "2024-08-02T04:00:00.000Z",
+                "status": "complete",
+                "tokenAddress": null
+            }
+        },
+        {
+            "amount": 0.022222222222222223,
+            "round": {
+                "_id": "66c029321bce16a1894275e6",
+                "roundId": "223",
+                "__v": 0,
+                "areWinnersReported": true,
+                "communityId": "23",
+                "createdAt": "2024-08-17T04:38:10.149Z",
+                "denomination": "ETH",
+                "logo": "https://res.cloudinary.com/dbuaprzc0/image/upload/v1723862788/ndtmestxlglrkgn1lcq8.png",
+                "name": "Base Builds by Rounds.wtf",
+                "startsAt": "2024-06-28T04:00:00.000Z",
+                "status": "complete",
+                "tokenAddress": null
+            }
+        }
+    ],
+    "totalEarnings": [
+        {
+            "denomination": "ETH",
+            "amount": 0.0562342697080741
+        },
+        {
+            "denomination": "UNKNOWN",
+            "amount": 20.242914979757085
+        }
+    ]
+}

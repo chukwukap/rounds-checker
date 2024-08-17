@@ -1,5 +1,6 @@
 "use server";
 
+import { UserRoundsData } from "@/lib/types";
 import { init, fetchQuery } from "@airstack/node";
 
 import { revalidatePath } from "next/cache";
@@ -26,6 +27,7 @@ export async function searchFarcasterUsers(query: string) {
           userId
           profileName
           profileImage
+          
         }
       }
     }
@@ -45,7 +47,7 @@ export async function searchFarcasterUsers(query: string) {
     ) {
       return response.data.Socials.Social.map((social: any) => ({
         fid: social.userId,
-        userId: social.profileName,
+        userName: social.profileName,
         profileImage: social.profileImage,
       }));
     } else {
@@ -58,23 +60,53 @@ export async function searchFarcasterUsers(query: string) {
   }
 }
 
-export async function fetchUserData(userId: string) {
+export async function fetchUserData(
+  userId: string
+): Promise<UserRoundsData | null> {
   try {
     const response = await fetch(
       `https://rounds-checker.adaptable.app/api/v1/rounds/user?userId=${userId}`,
-      { next: { revalidate: 60 } } // Revalidate every 60 seconds
+      {
+        next: { revalidate: 60 },
+        headers: {
+          Accept: "application/json",
+        },
+      }
     );
 
     if (!response.ok) {
-      throw new Error("Failed to fetch user data");
+      console.error(
+        `Failed to fetch user data: ${response.status} ${response.statusText}`
+      );
+      return null;
     }
 
-    const data = await response.json();
-    console.log("data from api:", data);
+    const data: unknown = await response.json();
+
+    if (!isUserRoundsData(data)) {
+      console.log("data:", data);
+      console.error(
+        "Received data does not match expected UserRoundsData structure"
+      );
+      return null;
+    }
+
+    console.log("Data from API:", data);
     revalidatePath(`/rounds/${userId}`);
     return data;
   } catch (error) {
     console.error("Error fetching user data:", error);
-    throw error;
+    return null;
   }
+}
+// Type guard function to check if the data matches UserRoundsData interface
+function isUserRoundsData(data: unknown): data is UserRoundsData {
+  return (
+    typeof data === "object" &&
+    data !== null &&
+    "farcasterId" in data &&
+    "roundsParticipated" in data &&
+    "winnings" in data &&
+    "totalEarnings" in data
+  );
 }

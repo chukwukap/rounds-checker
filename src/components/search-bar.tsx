@@ -9,13 +9,7 @@ import { useRouter } from "next/navigation";
 import { searchFarcasterUsers } from "@/actions/api";
 import debounce from "lodash/debounce";
 import Image from "next/image";
-import { useFarcasterUser } from "@/contexts/user";
-
-interface FarcasterUser {
-  fid: string;
-  username: string;
-  profileImage: string;
-}
+import { FarcasterUser, useFarcasterUser } from "@/contexts/user";
 
 export function SearchBar() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -57,7 +51,7 @@ export function SearchBar() {
     e.preventDefault();
     if (searchQuery.trim()) {
       const user = suggestions.find(
-        (u) => u.username.toLowerCase() === searchQuery.trim().toLowerCase()
+        (u) => u.userName.toLowerCase() === searchQuery.trim().toLowerCase()
       );
       if (user) {
         handleSuggestionClick(user);
@@ -133,19 +127,21 @@ export function SearchBar() {
                     <Image
                       unoptimized
                       src={user.profileImage}
-                      alt={`${user.username}'s profile`}
+                      alt={`${user.userName}'s profile`}
                       width={32}
                       height={32}
                       className="rounded-full mr-3"
                     />
                   ) : (
-                    <div className="w-8 h-8 bg-gray-200 rounded-full mr-3 flex items-center justify-center">
-                      <span className="text-gray-500 text-sm">
-                        {user.username.charAt(0).toUpperCase()}
+                    <div className="w-8 h-8 bg-secondary rounded-full mr-3 flex items-center justify-center ">
+                      <span className="text-secondary-content text-sm">
+                        {user.userName.charAt(0).toUpperCase()}
                       </span>
                     </div>
                   )}
-                  <span>{user.username}</span>
+                  <span className="text-secondary-content">
+                    {user.userName}
+                  </span>
                 </div>
               </div>
             ))

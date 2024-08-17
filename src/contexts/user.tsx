@@ -1,8 +1,8 @@
 import React, { createContext, useState, useContext, ReactNode } from "react";
 
-interface FarcasterUser {
+export interface FarcasterUser {
   fid: string;
-  username: string;
+  userName: string;
   profileImage: string;
 }
 

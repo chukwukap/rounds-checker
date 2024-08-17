@@ -1,6 +1,7 @@
 import React from "react";
 import { fetchUserData } from "@/actions/api";
 import RoundsPageClient from "./_components/roundsPageClient";
+import { notFound } from "next/navigation";
 
 export async function generateMetadata({
   params,
@@ -20,6 +21,10 @@ export default async function RoundsPage({
 }) {
   const userData = await fetchUserData(params.userId);
   console.log("userData", userData);
+
+  if (!userData) {
+    notFound(); // This will render the closest not-found page
+  }
 
   return <RoundsPageClient initialUserData={userData} userId={params.userId} />;
 }
