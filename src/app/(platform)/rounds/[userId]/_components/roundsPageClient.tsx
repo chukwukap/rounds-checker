@@ -10,6 +10,7 @@ import {
   TrophyIcon,
   ArrowPathIcon,
 } from "@heroicons/react/24/solid";
+import { useFarcasterUser } from "@/contexts/user";
 
 interface UserData {
   _id: string;
@@ -31,6 +32,7 @@ export default function RoundsPageClient({
   const [userData, setUserData] = useState<UserData>(initialUserData);
   const [ethPrice, setEthPrice] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const { farcasterUser, setFarcasterUser } = useFarcasterUser();
   const { theme } = useTheme();
 
   useEffect(() => {
@@ -38,6 +40,9 @@ export default function RoundsPageClient({
       setIsLoading(true);
       try {
         await fetchEthPrice();
+        if (!farcasterUser || farcasterUser.fid !== userId) {
+          await fetchFarcasterUser();
+        }
       } catch (error) {
         console.error("Error loading data:", error);
       } finally {
@@ -46,7 +51,7 @@ export default function RoundsPageClient({
     };
 
     loadData();
-  }, []);
+  }, [userId, farcasterUser]);
 
   const fetchEthPrice = async () => {
     try {
@@ -57,6 +62,21 @@ export default function RoundsPageClient({
       setEthPrice(data.ethereum.usd);
     } catch (error) {
       console.error("Error fetching ETH price:", error);
+    }
+  };
+
+  const fetchFarcasterUser = async () => {
+    try {
+      // Replace this with your actual API call to fetch Farcaster user data
+      const response = await fetch(`/api/farcaster/user/${userId}`);
+      const userData = await response.json();
+      setFarcasterUser({
+        fid: userData.fid,
+        username: userData.username,
+        profileImage: userData.profileImage,
+      });
+    } catch (error) {
+      console.error("Error fetching Farcaster user:", error);
     }
   };
 
@@ -81,14 +101,20 @@ export default function RoundsPageClient({
       >
         <div className="flex items-center mb-6">
           <Image
-            src={`https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_png,w_256/${userId}.png`}
-            alt={`${userId}'s avatar`}
+            src={
+              farcasterUser?.profileImage ||
+              `https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_png,w_256/${userId}.png`
+            }
+            alt={`${farcasterUser?.username || userId}'s avatar`}
+            unoptimized={true}
             width={64}
             height={64}
             className="rounded-full mr-4"
           />
           <div>
-            <h1 className="text-3xl font-bold">{userId}</h1>
+            <h1 className="text-3xl font-bold">
+              {farcasterUser?.username || userId}
+            </h1>
             <p className="text-muted-foreground">
               Farcaster ID: {userData.farcasterId}
             </p>

@@ -11,6 +11,7 @@ import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { WagmiProvider } from "wagmi";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import config from "@/wagmi";
+import { FarcasterUserProvider } from "@/contexts/user";
 
 const queryClient = new QueryClient();
 
@@ -19,7 +20,9 @@ export function Providers({ children, ...props }: ThemeProviderProps) {
     <NextThemesProvider {...props}>
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
-          <RainbowKitProvider>{children}</RainbowKitProvider>
+          <FarcasterUserProvider>
+            <RainbowKitProvider>{children}</RainbowKitProvider>
+          </FarcasterUserProvider>
         </QueryClientProvider>
       </WagmiProvider>
     </NextThemesProvider>

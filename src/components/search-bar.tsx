@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { searchFarcasterUsers } from "@/actions/api";
 import debounce from "lodash/debounce";
 import Image from "next/image";
+import { useFarcasterUser } from "@/contexts/user";
 
 interface FarcasterUser {
   fid: string;
@@ -23,6 +24,7 @@ export function SearchBar() {
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const { setFarcasterUser } = useFarcasterUser();
 
   const debouncedSearch = useCallback(
     debounce(async (query: string) => {
@@ -58,7 +60,7 @@ export function SearchBar() {
         (u) => u.username.toLowerCase() === searchQuery.trim().toLowerCase()
       );
       if (user) {
-        navigateToUserRounds(user.fid);
+        handleSuggestionClick(user);
       } else {
         toast.error(
           "User not found. Please select a user from the suggestions."
@@ -67,8 +69,9 @@ export function SearchBar() {
     }
   };
 
-  const handleSuggestionClick = (fid: string) => {
-    navigateToUserRounds(fid);
+  const handleSuggestionClick = (user: FarcasterUser) => {
+    setFarcasterUser(user);
+    navigateToUserRounds(user.fid);
   };
 
   const navigateToUserRounds = (fid: string) => {
@@ -123,7 +126,7 @@ export function SearchBar() {
               <div
                 key={user.fid}
                 className="px-4 py-3 hover:bg-secondary cursor-pointer transition-colors duration-150"
-                onClick={() => handleSuggestionClick(user.fid)}
+                onClick={() => handleSuggestionClick(user)}
               >
                 <div className="flex items-center">
                   {user.profileImage ? (
