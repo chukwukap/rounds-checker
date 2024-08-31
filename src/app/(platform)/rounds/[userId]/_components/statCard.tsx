@@ -13,7 +13,7 @@ export const StatCard: React.FC<StatCardProps> = ({
   value,
   subtitle,
 }) => (
-  <div className="bg-base-300 p-6 rounded-xl flex items-center shadow-md transition-all duration-300 hover:shadow-lg hover:scale-105">
+  <div className="bg-base-300 p-6 rounded-xl   flex items-center shadow-md transition-all duration-300 hover:shadow-lg hover:scale-105">
     <div className="mr-4 bg-base-100 p-3 rounded-full">{icon}</div>
     <div>
       <h3 className="text-lg font-semibold text-secondary">{title}</h3>
