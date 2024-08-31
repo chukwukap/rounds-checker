@@ -10,8 +10,8 @@ import {
   TrophyIcon,
   ArrowPathIcon,
 } from "@heroicons/react/24/solid";
-import { useFarcasterUser } from "@/contexts/user";
-import { fetchUserData } from "@/actions/api";
+// import { useFarcasterUser } from "@/contexts/user";
+import { fetchUserRoundsInfo } from "@/actions/api";
 import { toast } from "sonner";
 import { UserRoundsData, Round } from "@/lib/types";
 import { StatCard } from "./statCard";
@@ -20,38 +20,47 @@ import { TopEarnings } from "./topEarning";
 import { RoundDetails } from "./roundDetails";
 import { RecentRounds } from "./recentRounds";
 import Link from "next/link";
+import { useRootStore } from "@/components/providers/zustandStoresProvider";
 
-interface RoundsPageClientProps {
-  initialUserData: UserRoundsData;
+interface UserDetailsPageClientProps {
   userId: string;
+  userRoundsInfo: UserRoundsData;
 }
 
-export default function RoundsPageClient({
-  initialUserData,
+export default function UserIdClient({
   userId,
-}: RoundsPageClientProps) {
-  const [userData, setUserData] = useState<UserRoundsData>(initialUserData);
+  userRoundsInfo,
+}: UserDetailsPageClientProps) {
   const [ethPrice, setEthPrice] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
   const [selectedRound, setSelectedRound] = useState<Round | null>(null);
-  const { farcasterUser } = useFarcasterUser();
-  const { theme } = useTheme();
+  const { user: _user, rounds: _rounds, ui: _ui } = useRootStore();
+  const ui = _ui((state) => state);
 
-  useEffect(() => {
-    const loadData = async () => {
-      setIsLoading(true);
-      try {
-        await Promise.all([fetchEthPrice(), loadUserData()]);
-      } catch (error) {
-        console.error("Error loading data:", error);
-        toast.error("Failed to load user data. Please try again later.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const rounds = _rounds((state) => state);
 
-    loadData();
-  }, [userId]);
+  const { setUser, userName, profileImage } = _user((state) => state);
+
+  // useEffect(() => {
+  //   const getUserRoundsInfo = async () => {
+  //     try {
+  //       ui.setLoading(true);
+
+  //       const data = await fetchUserRoundsInfo(userId);
+  //       if (data) {
+  //         // rounds.(data);
+  //         console.log(data);
+  //       } else {
+  //         toast.error("Failed to fetch user data. Please try again later.");
+  //       }
+  //     } catch (error) {
+  //       toast.error("Failed to load user data. Please try again later.");
+  //     } finally {
+  //       ui.setLoading(false);
+  //     }
+  //   };
+
+  //   getUserRoundsInfo();
+  // }, [userId]);
 
   const fetchEthPrice = async () => {
     try {
@@ -59,6 +68,7 @@ export default function RoundsPageClient({
         "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
       );
       const data = await response.json();
+      console.log("ethPrice data: ", data);
       setEthPrice(data.ethereum.usd);
     } catch (error) {
       console.error("Error fetching ETH price:", error);
@@ -67,43 +77,25 @@ export default function RoundsPageClient({
     }
   };
 
-  const loadUserData = async () => {
-    try {
-      const data = await fetchUserData(userId);
-      if (data) {
-        setUserData(data);
-      } else {
-        toast.error("Failed to fetch user data. Please try again later.");
-      }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-      toast.error("Failed to fetch user data. Please try again later.");
-    }
-  };
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <ArrowPathIcon className="w-8 h-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
   const totalEthEarnings =
-    userData.totalEarnings.find((e) => e.denomination === "ETH")?.amount ?? 0;
+    userRoundsInfo.totalEarnings.find((e) => e.denomination === "ETH")
+      ?.amount ?? 0;
   const totalUsdEarnings = totalEthEarnings * ethPrice;
 
-  const winningsByDenomination = userData.winnings.reduce((acc, winning) => {
-    const { denomination } = winning.round;
-    acc[denomination] = (acc[denomination] || 0) + winning.amount;
-    return acc;
-  }, {} as Record<string, number>);
+  const winningsByDenomination = userRoundsInfo.winnings.reduce(
+    (acc, winning) => {
+      const { denomination } = winning.round;
+      acc[denomination] = (acc[denomination] || 0) + winning.amount;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
 
   const pieChartData = Object.entries(winningsByDenomination).map(
     ([name, value]) => ({ name, value })
   );
 
-  const barChartData = userData.winnings.map((winning) => ({
+  const barChartData = userRoundsInfo.winnings.map((winning) => ({
     name: winning.round.name,
     amount: winning.amount,
     usdAmount:
@@ -112,7 +104,7 @@ export default function RoundsPageClient({
         : winning.amount,
   }));
 
-  const hasParticipated = userData.roundsParticipated.length > 0;
+  const hasParticipated = userRoundsInfo.roundsParticipated.length > 0;
 
   return (
     <div className="container mx-auto px-4 py-8 bg-gradient-to-br from-base-100 to-base-300 min-h-screen">
@@ -125,7 +117,7 @@ export default function RoundsPageClient({
         <div className="flex items-center mb-6">
           <Image
             src={"https://placehold.co/600x400/png"}
-            alt={`${userData.farcasterId || userId}'s avatar`}
+            alt={`${userRoundsInfo.farcasterId || userId}'s avatar`}
             unoptimized={true}
             width={96}
             height={96}
@@ -133,10 +125,10 @@ export default function RoundsPageClient({
           />
           <div>
             <h1 className="text-4xl font-bold text-primary">
-              {userData.farcasterId || userId}
+              {userRoundsInfo.farcasterId || userId}
             </h1>
             <p className="text-xl text-secondary">
-              Farcaster ID: {userData.farcasterId || "N/A"}
+              Farcaster ID: {userRoundsInfo.farcasterId || "N/A"}
             </p>
           </div>
         </div>
@@ -154,7 +146,7 @@ export default function RoundsPageClient({
           <StatCard
             icon={<ChartBarIcon className="w-10 h-10 text-info" />}
             title="Rounds Participated"
-            value={userData.roundsParticipated.length.toString()}
+            value={userRoundsInfo.roundsParticipated.length.toString()}
           />
           <StatCard
             icon={<TrophyIcon className="w-10 h-10 text-warning" />}
@@ -162,8 +154,8 @@ export default function RoundsPageClient({
             value={
               hasParticipated
                 ? `${(
-                    (userData.winnings.length /
-                      userData.roundsParticipated.length) *
+                    (userRoundsInfo.winnings.length /
+                      userRoundsInfo.roundsParticipated.length) *
                     100
                   ).toFixed(2)}%`
                 : "N/A"
@@ -199,7 +191,7 @@ export default function RoundsPageClient({
               <TopEarnings
                 data={barChartData}
                 onBarClick={(data) => {
-                  const round = userData.winnings.find(
+                  const round = userRoundsInfo.winnings.find(
                     (w) => w.round.name === data.name
                   )?.round;
                   setSelectedRound(round || null);
@@ -222,7 +214,7 @@ export default function RoundsPageClient({
               Recent Rounds
             </h2>
             <RecentRounds
-              winnings={userData.winnings}
+              winnings={userRoundsInfo.winnings}
               ethPrice={ethPrice}
               onRowClick={(round) => setSelectedRound(round)}
             />
@@ -239,7 +231,7 @@ export default function RoundsPageClient({
             No Rounds Participation Yet
           </h2>
           <p className="text-lg text-secondary mb-6">
-            It looks like {farcasterUser?.userName || userId} hasn&apos;t
+            It looks like {userRoundsInfo.farcasterId || userId} hasn&apos;t
             participated in any rounds yet. Check back later or explore
             available rounds to get started!
           </p>

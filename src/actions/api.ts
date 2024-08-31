@@ -11,6 +11,7 @@ init(
 );
 
 export async function searchFarcasterUsers(query: string) {
+  console.log("query", query);
   const graphqlQuery = `
     query SearchFarcasterUsers($query: String!) {
       Socials(
@@ -60,7 +61,7 @@ export async function searchFarcasterUsers(query: string) {
   }
 }
 
-export async function fetchUserData(
+export async function fetchUserRoundsInfo(
   userId: string
 ): Promise<UserRoundsData | null> {
   try {
@@ -92,7 +93,7 @@ export async function fetchUserData(
     }
 
     console.log("Data from API:", data);
-    revalidatePath(`/rounds/${userId}`);
+    revalidatePath(`/user/${userId}`);
     return data;
   } catch (error) {
     console.error("Error fetching user data:", error);

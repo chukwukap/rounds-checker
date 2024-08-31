@@ -1,6 +1,6 @@
 import React from "react";
-import { fetchUserData } from "@/actions/api";
-import RoundsPageClient from "./_components/roundsPageClient";
+import { fetchUserRoundsInfo } from "@/actions/api";
+import UserIdClient from "./_components/userIdClient";
 import { notFound } from "next/navigation";
 
 export async function generateMetadata({
@@ -19,12 +19,13 @@ export default async function RoundsPage({
 }: {
   params: { userId: string };
 }) {
-  const userData = await fetchUserData(params.userId);
+  const userData = await fetchUserRoundsInfo(params.userId);
   console.log("userData", userData);
 
   if (!userData) {
+    console.log("userData not found");
     notFound(); // This will render the closest not-found page
   }
 
-  return <RoundsPageClient initialUserData={userData} userId={params.userId} />;
+  return <UserIdClient userRoundsInfo={userData} userId={params.userId} />;
 }

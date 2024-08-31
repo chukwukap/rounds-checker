@@ -31,3 +31,9 @@ export interface UserRoundsData {
   winnings: Winning[];
   totalEarnings: TotalEarning[];
 }
+
+export type User = {
+  fid: string;
+  userName: string;
+  profileImage: string;
+};

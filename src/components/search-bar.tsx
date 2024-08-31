@@ -9,26 +9,30 @@ import { useRouter } from "next/navigation";
 import { searchFarcasterUsers } from "@/actions/api";
 import debounce from "lodash/debounce";
 import Image from "next/image";
-import { FarcasterUser, useFarcasterUser } from "@/contexts/user";
+import { useRootStore } from "./providers/zustandStoresProvider";
+import { User } from "@/lib/types";
 
 export function SearchBar() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<FarcasterUser[]>([]);
+  const [suggestions, setSuggestions] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
-  const { setFarcasterUser } = useFarcasterUser();
+
+  const { user } = useRootStore();
+  const setUser = user((state) => state.setUser);
 
   const debouncedSearch = useCallback(
     debounce(async (query: string) => {
-      if (query.length < 3) {
+      if (query.length < 2) {
         setSuggestions([]);
         return;
       }
       setIsLoading(true);
       try {
         const users = await searchFarcasterUsers(query);
+        console.log("users", users);
         setSuggestions(users);
       } catch (error) {
         console.error("Error fetching suggestions:", error);
@@ -51,7 +55,8 @@ export function SearchBar() {
     e.preventDefault();
     if (searchQuery.trim()) {
       const user = suggestions.find(
-        (u) => u.userName.toLowerCase() === searchQuery.trim().toLowerCase()
+        (user) =>
+          user.userName.toLowerCase() === searchQuery.trim().toLowerCase()
       );
       if (user) {
         handleSuggestionClick(user);
@@ -63,13 +68,13 @@ export function SearchBar() {
     }
   };
 
-  const handleSuggestionClick = (user: FarcasterUser) => {
-    setFarcasterUser(user);
+  const handleSuggestionClick = (user: User) => {
+    // setUser(user.fid, user.userName);
     navigateToUserRounds(user.fid);
   };
 
   const navigateToUserRounds = (fid: string) => {
-    router.push(`/rounds/${encodeURIComponent(fid)}`);
+    router.push(`/user/${encodeURIComponent(fid)}`);
   };
 
   const handleClearSearch = () => {
