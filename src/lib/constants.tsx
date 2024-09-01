@@ -1,0 +1,15 @@
+export const tokenMapping: Record<string, string> = {
+  ETH: "ethereum",
+  BTC: "bitcoin",
+  BUILD: "build",
+  USDT: "tether",
+  USDC: "usd-coin",
+  ARB: "arbitrum",
+  OP: "optimistic-ethereum",
+  SOL: "solana",
+  XRP: "xrp",
+  ADA: "cardano",
+  DOGE: "dogecoin",
+  MOXIE: "moxie",
+  WARP: "warp",
+};

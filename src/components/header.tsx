@@ -5,7 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { ChevronDownIcon } from "@heroicons/react/24/solid";
+import { ChevronDownIcon, SunIcon, MoonIcon } from "@heroicons/react/24/solid";
+import { useTheme } from "next-themes";
 
 const navItems = [
   { name: "Home", href: "/" },
@@ -17,8 +18,11 @@ export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
@@ -26,6 +30,8 @@ export function Header() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  if (!mounted) return null;
 
   return (
     <header
@@ -51,7 +57,7 @@ export function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-1">
+          <nav className="hidden md:flex space-x-1 items-center">
             {navItems.map((item) => (
               <Link
                 key={item.name}
@@ -65,10 +71,32 @@ export function Header() {
                 {item.name}
               </Link>
             ))}
+            <button
+              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+              className="ml-4 p-2 rounded-full hover:bg-accent transition-colors duration-200"
+              aria-label="Toggle theme"
+            >
+              {theme === "light" ? (
+                <MoonIcon className="w-6 h-6 text-foreground" />
+              ) : (
+                <SunIcon className="w-6 h-6 text-foreground" />
+              )}
+            </button>
           </nav>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center">
+            <button
+              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+              className="mr-4 p-2 rounded-full hover:bg-accent transition-colors duration-200"
+              aria-label="Toggle theme"
+            >
+              {theme === "light" ? (
+                <MoonIcon className="w-6 h-6 text-foreground" />
+              ) : (
+                <SunIcon className="w-6 h-6 text-foreground" />
+              )}
+            </button>
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="text-foreground p-2 rounded-full hover:bg-accent transition-colors duration-200"

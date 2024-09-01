@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { tokenMapping } from "@/lib/constants";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -11,9 +12,23 @@ export async function GET(req: NextRequest) {
     );
   }
 
+  // Map tokens to CoinGecko IDs
+  const tokenIds = tokens
+    .split(",")
+    .map((token) => tokenMapping[token.toUpperCase()])
+    .filter(Boolean)
+    .join(",");
+
+  if (!tokenIds) {
+    return NextResponse.json(
+      { error: "No valid tokens found" },
+      { status: 400 }
+    );
+  }
+
   try {
     const response = await fetch(
-      `https://api.coingecko.com/api/v3/simple/price?ids=${tokens}&vs_currencies=usd`,
+      `https://api.coingecko.com/api/v3/simple/price?ids=${tokenIds}&vs_currencies=usd`,
       {
         headers: {
           "Cache-Control": "s-maxage=300, stale-while-revalidate=59",

@@ -1,3 +1,4 @@
+import { tokenMapping } from "@/lib/constants";
 import { useState, useEffect } from "react";
 
 export const useTokenPrices = (tokens: string[]) => {
@@ -8,7 +9,7 @@ export const useTokenPrices = (tokens: string[]) => {
   useEffect(() => {
     const fetchPrices = async () => {
       try {
-        const ids = tokens.map((token) => token.toLowerCase()).join(",");
+        const ids = tokens.map((token) => token.toUpperCase()).join(",");
 
         const response = await fetch(`/api/tokenPrices?tokens=${ids}`);
         if (!response.ok) {
@@ -18,9 +19,9 @@ export const useTokenPrices = (tokens: string[]) => {
         const formattedPrices: Record<string, number> = {};
 
         tokens.forEach((token) => {
-          const id = token.toLowerCase();
-          if (data[id]) {
-            formattedPrices[token.toUpperCase()] = data[id].usd;
+          const id = token.toUpperCase();
+          if (data[tokenMapping[id]]) {
+            formattedPrices[id] = data[tokenMapping[id]].usd;
           }
         });
 
