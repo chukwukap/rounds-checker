@@ -1,13 +1,15 @@
 export type RoundId = string;
+export type TokenDenomination = string;
 
 export interface Round {
   _id: string;
   roundId: RoundId;
   __v: number;
   areWinnersReported: boolean;
+
   communityId: string;
   createdAt: string;
-  denomination: string;
+  denomination: TokenDenomination;
   logo: string;
   name: string;
   startsAt: string;

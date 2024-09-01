@@ -69,12 +69,13 @@ export function SearchBar() {
   };
 
   const handleSuggestionClick = (user: User) => {
-    // setUser(user.fid, user.userName);
-    navigateToUserRounds(user.fid);
-  };
+    setUser({
+      fid: user.fid,
+      userName: user.userName,
+      profileImage: user.profileImage,
+    });
 
-  const navigateToUserRounds = (fid: string) => {
-    router.push(`/user/${encodeURIComponent(fid)}`);
+    router.push(`/user/${encodeURIComponent(user.fid)}`);
   };
 
   const handleClearSearch = () => {

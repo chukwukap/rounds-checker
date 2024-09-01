@@ -1,56 +1,39 @@
 import React from "react";
-import { motion } from "framer-motion";
-import { format } from "date-fns";
-import { Winning } from "@/lib/types";
+import { Winning, Round } from "@/lib/types";
+import { formatNumber } from "@/lib/utils";
 
 interface RecentRoundsProps {
   winnings: Winning[];
-  ethPrice: number;
-  onRowClick: (round: Winning["round"]) => void;
+  onRowClick: (round: Round) => void;
 }
 
-export const RecentRounds: React.FC<RecentRoundsProps> = ({
-  winnings,
-  ethPrice,
-  onRowClick,
-}) => (
-  <div className="overflow-x-auto">
-    <table className="w-full">
-      <thead>
-        <tr className="bg-base-300 text-primary">
-          <th className="px-4 py-2 text-left rounded-tl-lg">Round</th>
-          <th className="px-4 py-2 text-left">Earnings</th>
-          <th className="px-4 py-2 text-left">Earnings (USD)</th>
-          <th className="px-4 py-2 text-left rounded-tr-lg">Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        {winnings.map((winning, index) => (
-          <motion.tr
-            key={index}
-            className="border-b border-base-300 hover:bg-base-300 cursor-pointer transition-colors duration-200"
-            onClick={() => onRowClick(winning.round)}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.05 }}
-          >
-            <td className="px-4 py-3">{winning.round.name}</td>
-            <td className="px-4 py-3">
-              {winning.amount.toFixed(6)} {winning.round.denomination}
-            </td>
-            <td className="px-4 py-3">
-              $
-              {(
-                winning.amount *
-                (winning.round.denomination === "ETH" ? ethPrice : 1)
-              ).toFixed(2)}
-            </td>
-            <td className="px-4 py-3">
-              {format(new Date(winning.round.startsAt), "PP")}
-            </td>
-          </motion.tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-);
+export function RecentRounds({ winnings, onRowClick }: RecentRoundsProps) {
+  return (
+    <div className="overflow-x-auto">
+      <table className="table w-full">
+        <thead>
+          <tr>
+            <th>Round Name</th>
+            <th>Earnings</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {winnings.slice(0, 5).map((winning, index) => (
+            <tr
+              key={index}
+              className="hover:bg-base-300 cursor-pointer"
+              onClick={() => onRowClick(winning.round)}
+            >
+              <td>{winning.round.name}</td>
+              <td>{`${formatNumber(winning.amount)} ${
+                winning.round.denomination
+              }`}</td>
+              <td>{new Date(winning.round.startsAt).toLocaleDateString()}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
