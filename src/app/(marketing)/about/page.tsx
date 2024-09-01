@@ -139,7 +139,7 @@ const AboutPage: React.FC = () => {
             transition={{ duration: 0.5 }}
           >
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              About Rounds Checker
+              About Rounds Caster
             </h1>
             <p className="text-xl max-w-2xl mx-auto">
               Empowering Farcaster users to track, analyze, and optimize their
@@ -230,7 +230,7 @@ const AboutPage: React.FC = () => {
             </h2>
             <p className="text-xl mb-8">
               Join thousands of Farcaster users who are already using Rounds
-              Checker.
+              Caster.
             </p>
             <motion.a
               href="/#search"
@@ -238,7 +238,7 @@ const AboutPage: React.FC = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              Try Rounds Checker Now
+              Try Rounds Caster Now
             </motion.a>
           </motion.div>
         </div>

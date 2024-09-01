@@ -21,7 +21,7 @@ export async function searchFarcasterUsers(query: string) {
             profileName: { _regex: $query }
           },
           blockchain: ethereum,
-          limit: 5
+          limit: 15
         }
       ) {
         Social {

@@ -46,13 +46,13 @@ export function Header() {
           <Link href="/" className="flex items-center space-x-2">
             <Image
               src="/logo.svg"
-              alt="Rounds Checker Logo"
+              alt="Rounds Caster Logo"
               width={40}
               height={40}
               className="rounded-full"
             />
             <span className="font-bold text-lg text-foreground">
-              Rounds Checker
+              Rounds Caster
             </span>
           </Link>
 

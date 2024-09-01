@@ -50,13 +50,13 @@ export default function LandingPage() {
         >
           <Image
             src="/logo.svg"
-            alt="Rounds Checker Logo"
+            alt="Rounds Caster Logo"
             width={120}
             height={120}
             className="mx-auto mb-8"
           />
           <h1 className="text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-            Rounds Checker
+            Rounds Caster
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-12">
             Track your Farcaster rounds participation and earnings from
@@ -136,7 +136,7 @@ export default function LandingPage() {
           Ready to track your rounds?
         </h2>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-12">
-          Join thousands of Farcaster users who are already using Rounds Checker
+          Join thousands of Farcaster users who are already using Rounds Caster
           to monitor their performance.
         </p>
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>

@@ -47,7 +47,7 @@ export default function ComingSoonLeaderboard() {
           Leaderboard Coming Soon!
         </h1>
         <p className="text-xl text-secondary mb-8">
-          We&apos;re working hard to bring you the ultimate Rounds Checker
+          We&apos;re working hard to bring you the ultimate Rounds Caster
           leaderboard experience.
         </p>
 
