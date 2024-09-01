@@ -10,7 +10,7 @@ export async function generateMetadata({
 }) {
   return {
     title: `${params.userId}'s Rounds | Rounds Caster`,
-    description: `Check ${params.userId}'s participation and earnings in rounds.wtf events.`,
+    description: `Check your participation and earnings in rounds.wtf events.`,
   };
 }
 
