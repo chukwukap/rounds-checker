@@ -74,6 +74,7 @@ export async function fetchUserRoundsInfo(
         },
       }
     );
+    console.log(response)
 
     if (!response.ok) {
       console.error(
@@ -84,7 +85,7 @@ export async function fetchUserRoundsInfo(
 
     const data: unknown = await response.json();
 
-    if (!isUserRoundsData(data)) {
+    if (data) {
       console.log("data:", data);
       console.error(
         "Received data does not match expected UserRoundsData structure"
@@ -94,7 +95,7 @@ export async function fetchUserRoundsInfo(
 
     console.log("Data from API:", data);
     revalidatePath(`/user/${userId}`);
-    return data;
+    return data as UserRoundsData;
   } catch (error) {
     console.error("Error fetching user data:", error);
     return null;
@@ -152,13 +153,3 @@ export async function fetchTokenPrices(
   }
 }
 
-function isUserRoundsData(data: unknown): data is UserRoundsData {
-  return (
-    typeof data === "object" &&
-    data !== null &&
-    "farcasterId" in data &&
-    "roundsParticipated" in data &&
-    "winnings" in data &&
-    "totalEarnings" in data
-  );
-}

@@ -1,12 +1,29 @@
-import { getDefaultConfig } from "@rainbow-me/rainbowkit";
-import { mainnet, base } from "wagmi/chains";
+import { http, cookieStorage, createConfig, createStorage } from "wagmi";
+import { base } from "wagmi/chains";
+import { coinbaseWallet } from "wagmi/connectors";
 
-const config = getDefaultConfig({
-  appName: "Rounds Checker",
-  projectId: "c4f79cc821944d9680842e34466bfb",
-  chains: [mainnet, base],
+export function getConfig() {
+  return createConfig({
+    chains: [base],
+    connectors: [
+      coinbaseWallet({
+        appName: "Rounds Caster",
+        preference: "smartWalletOnly",
+        version: "4",
+      }),
+    ],
+    storage: createStorage({
+      storage: cookieStorage,
+    }),
+    ssr: true,
+    transports: {
+      [base.id]: http(),
+    },
+  });
+}
 
-  ssr: true,
-});
-
-export default config;
+declare module "wagmi" {
+  interface Register {
+    config: ReturnType<typeof getConfig>;
+  }
+}

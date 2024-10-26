@@ -7,11 +7,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { ChevronDownIcon, SunIcon, MoonIcon } from "@heroicons/react/24/solid";
 import { useTheme } from "next-themes";
+import { EnhancedWallet } from "./onchainKit/wallet";
 
 const navItems = [
   { name: "Home", href: "/" },
   { name: "Leaderboard", href: "/leaderboard" },
   { name: "About", href: "/about" },
+  { name: "Swap", href: "/swap" },
 ];
 
 export function Header() {
@@ -35,7 +37,7 @@ export function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 h-16 transition-all duration-300 ${
         isScrolled
           ? "bg-background/80 backdrop-blur-md shadow-md"
           : "bg-transparent"
@@ -110,6 +112,7 @@ export function Header() {
               </motion.div>
             </button>
           </div>
+          <EnhancedWallet />
         </div>
       </div>
 

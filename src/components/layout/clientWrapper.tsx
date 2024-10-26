@@ -6,6 +6,7 @@ import Footer from "@/components/footer";
 import { Header } from "@/components/header";
 import { useRootStore } from "../providers/zustandStoresProvider";
 import Loader from "@/components/loader";
+import { ContentWrapper } from "./contentWrapper";
 
 export const ClientWrapper = ({ children }: { children: React.ReactNode }) => {
   const { ui } = useRootStore();
@@ -17,7 +18,7 @@ export const ClientWrapper = ({ children }: { children: React.ReactNode }) => {
         {isLoading && <Loader />}
         <div className=" min-h-screen">
           <Header />
-          {children}
+          <ContentWrapper>{children}</ContentWrapper>
           <Footer />
         </div>
       </Providers>

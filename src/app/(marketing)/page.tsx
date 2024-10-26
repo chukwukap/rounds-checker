@@ -13,6 +13,9 @@ import {
 } from "@heroicons/react/24/outline";
 import { motion } from "framer-motion";
 import Footer from "@/components/footer";
+import CTA from "./_components/cta";
+import Testimonials from "./_components/testimonialSection";
+import Hero from "./_components/heroSection";
 
 function FeatureCard({
   icon,
@@ -67,7 +70,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section className="bg-background py-20">
+      <section className="bg-background py-20 ">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-semibold mb-12 text-center">
             Key Features
@@ -91,60 +94,9 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-
-      {/* Stats Section */}
-      {/* <section className="py-20 bg-gradient-to-r from-primary to-secondary text-white">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <motion.div
-              className="p-6"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              viewport={{ once: true }}
-            >
-              <h3 className="text-4xl font-bold mb-2">10,000+</h3>
-              <p className="text-xl">Active Users</p>
-            </motion.div>
-            <motion.div
-              className="p-6"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              viewport={{ once: true }}
-            >
-              <h3 className="text-4xl font-bold mb-2">500+</h3>
-              <p className="text-xl">Rounds Tracked</p>
-            </motion.div>
-            <motion.div
-              className="p-6"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              viewport={{ once: true }}
-            >
-              <h3 className="text-4xl font-bold mb-2">$1M+</h3>
-              <p className="text-xl">Total Earnings Tracked</p>
-            </motion.div>
-          </div>
-        </div>
-      </section> */}
-
-      {/* CTA Section */}
-      <section className="container mx-auto px-4 py-20 text-center">
-        <h2 className="text-4xl font-semibold mb-6">
-          Ready to track your rounds?
-        </h2>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-12">
-          Join thousands of Farcaster users who are already using Rounds Caster
-          to monitor their performance.
-        </p>
-        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-          <Button size="lg" className="text-lg px-8 py-6">
-            Get Started <ArrowRightIcon className="w-5 h-5 ml-2" />
-          </Button>
-        </motion.div>
-      </section>
+      <Hero />
+      <CTA />
+      <Testimonials />
     </div>
   );
 }
