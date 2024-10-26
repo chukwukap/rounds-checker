@@ -10,6 +10,7 @@ export function getConfig() {
         appName: "Rounds Caster",
         preference: "smartWalletOnly",
         version: "4",
+        
       }),
     ],
     storage: createStorage({

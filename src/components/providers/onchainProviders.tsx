@@ -17,16 +17,11 @@ export function OnchainProvider(props: {
       <QueryClientProvider client={queryClient}>
         <OnchainKitProvider
           apiKey={"jrY4mos7-wh-8MFia-Am2Bii7mGStOxx"}
-          // @ts-expect-error TO-DO: fix this
+          // @ts-expect-error - TODO: fix this
           chain={base}
           schemaId={
             "0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
           }
-          capabilities={{
-            paymasterService: {
-              url: process.env.NEXT_PUBLIC_PAYMASTER_AND_BUNDLER_ENDPOINT,
-            },
-          }}
         >
           {props.children}
         </OnchainKitProvider>
