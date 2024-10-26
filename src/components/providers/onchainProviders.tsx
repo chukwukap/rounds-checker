@@ -16,7 +16,7 @@ export function OnchainProvider(props: {
     <WagmiProvider config={config} initialState={props.initialState}>
       <QueryClientProvider client={queryClient}>
         <OnchainKitProvider
-          apiKey={process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY}
+          apiKey={"jrY4mos7-wh-8MFia-Am2Bii7mGStOxx"}
           // @ts-expect-error TO-DO: fix this
           chain={base}
           schemaId={
